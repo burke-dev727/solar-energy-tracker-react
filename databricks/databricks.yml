@@ -1,0 +1,27 @@
+bundle:
+  name: energy-tracker
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog that holds the energy schema.
+    default: workspace
+  schema:
+    description: Schema for the bronze, silver, and gold energy tables.
+    default: energy
+  secret_scope:
+    description: Secret scope containing the "eia-api-key" secret.
+    default: energy-tracker
+
+targets:
+  dev:
+    mode: development
+    default: true
+
+  # Production keeps the job's monthly schedule active.
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

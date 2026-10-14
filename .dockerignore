@@ -1,0 +1,8 @@
+**/.env
+**/.env.*
+.git
+.github
+node_modules
+dist
+databricks
+**/*.log

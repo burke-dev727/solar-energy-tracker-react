@@ -1,0 +1,55 @@
+resources:
+  jobs:
+    energy_etl:
+      name: energy-etl
+      description: Ingests EIA electricity generation data and builds the monthly energy mix tables.
+
+      schedule:
+        # EIA publishes monthly data, typically mid-month.
+        quartz_cron_expression: "0 0 6 20 * ?"
+        timezone_id: America/Chicago
+
+      tasks:
+        - task_key: ingest_eia
+          notebook_task:
+            notebook_path: ../src/ingest_eia.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              secret_scope: ${var.secret_scope}
+
+        - task_key: transform
+          depends_on:
+            - task_key: ingest_eia
+          notebook_task:
+            notebook_path: ../src/transform.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
+        - task_key: trends
+          depends_on:
+            - task_key: transform
+          notebook_task:
+            notebook_path: ../src/trends.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
+        - task_key: ingest_steo
+          notebook_task:
+            notebook_path: ../src/ingest_steo.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              secret_scope: ${var.secret_scope}
+
+        - task_key: forecast
+          depends_on:
+            - task_key: trends
+            - task_key: ingest_steo
+          notebook_task:
+            notebook_path: ../src/forecast.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
