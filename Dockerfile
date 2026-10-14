@@ -21,7 +21,7 @@ FROM gcr.io/distroless/static-debian12:nonroot
 WORKDIR /app
 COPY --from=server /energy-api ./energy-api
 COPY --from=web /app/dist ./dist
-COPY snapshot.json ./snapshot.json
+COPY --chmod=0644 snapshot.json ./snapshot.json
 ENV DATA_SOURCE=snapshot \
     SNAPSHOT_PATH=/app/snapshot.json \
     STATIC_DIR=/app/dist \

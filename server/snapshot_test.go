@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 	"time"
 )
@@ -35,6 +36,11 @@ func TestSnapshotRoundTrip(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if info, err := os.Stat(path); err != nil {
+		t.Fatal(err)
+	} else if runtime.GOOS != "windows" && info.Mode().Perm() != 0o644 {
+		t.Fatalf("snapshot mode = %v, want world-readable 0644", info.Mode().Perm())
+	}
 	if !loaded.snapshot.CreatedAt.Equal(created) {
 		t.Fatalf("createdAt = %v", loaded.snapshot.CreatedAt)
 	}

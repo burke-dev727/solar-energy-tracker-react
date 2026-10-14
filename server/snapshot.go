@@ -106,5 +106,9 @@ func exportSnapshot(ctx context.Context, source fullSource, path string, now tim
 	if err := tmp.Close(); err != nil {
 		return err
 	}
+	// CreateTemp makes owner-only files; the container reads the snapshot as a non-root user.
+	if err := os.Chmod(tmp.Name(), 0o644); err != nil {
+		return err
+	}
 	return os.Rename(tmp.Name(), path)
 }
