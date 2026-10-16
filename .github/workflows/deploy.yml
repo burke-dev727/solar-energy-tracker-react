@@ -7,6 +7,7 @@ on:
   # Monthly, the day after the Databricks energy-etl job loads new EIA data.
   schedule:
     - cron: "0 12 21 * *"
+  # Actions → Test and deploy → Run workflow. The branch dropdown lists existing branches.
   workflow_dispatch:
 
 permissions:
@@ -42,7 +43,8 @@ jobs:
 
   deploy:
     needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # Pushes and the monthly schedule publish main. A manual run publishes the branch selected in the dropdown.
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -65,7 +67,18 @@ jobs:
         run: go run . export-snapshot ../snapshot.json
 
       - name: Set image name
-        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+        id: image
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY,,}"
+          echo "IMAGE=$image" >> "$GITHUB_ENV"
+          {
+            echo "tags<<EOF"
+            echo "$image:${GITHUB_SHA}"
+            if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+              echo "$image:latest"
+            fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - uses: docker/login-action@v4
         with:
@@ -77,9 +90,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ env.IMAGE }}:${{ github.sha }}
-            ${{ env.IMAGE }}:latest
+          tags: ${{ steps.image.outputs.tags }}
 
       - uses: azure/login@v3
         with:
