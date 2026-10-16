@@ -35,10 +35,62 @@ button {
   color: inherit;
 }
 
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--card-border);
+  background: rgba(11, 17, 32, 0.82);
+  backdrop-filter: blur(16px);
+}
+
+.nav-brand {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-links a {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.nav-links a[aria-current='page'] {
+  color: #1c1917;
+  background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+}
+
 .page {
   width: min(1040px, 100% - 32px);
   margin: 0 auto;
-  padding: 56px 0 64px;
+  padding: 40px 0 64px;
   display: flex;
   flex-direction: column;
   align-items: center;

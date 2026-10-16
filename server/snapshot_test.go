@@ -105,6 +105,12 @@ func TestStaticHandler(t *testing.T) {
 	if rec := serve("/assets/app-123.js"); rec.Header().Get("Cache-Control") == "" {
 		t.Fatal("assets should be cacheable")
 	}
+	if rec := serve("/electricity"); rec.Code != http.StatusOK || rec.Body.String() != "<html>app</html>" {
+		t.Fatalf("/electricity = %d %q", rec.Code, rec.Body.String())
+	}
+	if rec := serve("/assets/missing.js"); rec.Code != http.StatusNotFound {
+		t.Fatalf("missing asset = %d", rec.Code)
+	}
 	if rec := serve("/healthz"); rec.Body.String() != "ok" {
 		t.Fatalf("/healthz = %q", rec.Body.String())
 	}

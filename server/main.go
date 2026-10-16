@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -67,15 +69,38 @@ func runExportSnapshot(path string) error {
 }
 
 // staticHandler serves the built frontend. Vite fingerprints files in
-// /assets/, so they can be cached indefinitely.
+// /assets/, so they can be cached indefinitely. Paths with no file, such as
+// /electricity, receive index.html so client-side routes work after a refresh.
 func staticHandler(dir string) http.Handler {
 	files := http.FileServer(http.Dir(dir))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/assets/") {
 			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 		}
+		if !staticFileExists(dir, r.URL.Path) {
+			if strings.HasPrefix(r.URL.Path, "/assets/") || path.Ext(r.URL.Path) != "" {
+				http.NotFound(w, r)
+				return
+			}
+			http.ServeFile(w, r, filepath.Join(dir, "index.html"))
+			return
+		}
 		files.ServeHTTP(w, r)
 	})
+}
+
+func staticFileExists(dir, urlPath string) bool {
+	clean := path.Clean("/" + urlPath)
+	if clean == "/" {
+		return true
+	}
+	full := filepath.Join(dir, filepath.FromSlash(strings.TrimPrefix(clean, "/")))
+	rel, err := filepath.Rel(dir, full)
+	if err != nil || strings.HasPrefix(rel, "..") {
+		return false
+	}
+	info, err := os.Stat(full)
+	return err == nil && !info.IsDir()
 }
 
 // chatAgentFromEnv returns the chat assistant, or nil if it isn't configured.
