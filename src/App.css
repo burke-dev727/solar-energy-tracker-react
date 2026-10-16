@@ -944,6 +944,87 @@ h3 {
   opacity: 0.8;
 }
 
+.dc-detail {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.dc-chart {
+  position: relative;
+  height: 340px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.dc-chart-bar {
+  height: 380px;
+  cursor: default;
+}
+
+.dc-years {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.dc-years button {
+  padding: 6px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dc-years button:hover {
+  color: var(--text);
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.dc-years button.active {
+  color: #1c1917;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+}
+
+.dc-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.dc-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: none;
+  color: var(--text);
+  -webkit-text-fill-color: var(--text);
+}
+
+.dc-sources {
+  margin: 14px 0 0;
+  padding-left: 1.15rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.dc-sources a {
+  color: #fde68a;
+}
+
 @media (max-width: 760px) {
   .page {
     padding-top: 36px;
@@ -990,5 +1071,13 @@ h3 {
     width: 100%;
     height: 100%;
     border-radius: 0;
+  }
+
+  .dc-chart {
+    height: 280px;
+  }
+
+  .dc-chart-bar {
+    height: 420px;
   }
 }

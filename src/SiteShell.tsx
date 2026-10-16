@@ -1,21 +1,32 @@
 import { useEffect } from 'react';
 import App from './App.tsx';
+import { DataCentersPage } from './DataCentersPage.tsx';
 import { HomePage } from './HomePage.tsx';
 import { SiteNav } from './SiteNav.tsx';
-import { electricityPath, usePathname } from './navigation';
+import { dataCentersPath, electricityPath, usePathname } from './navigation';
+
+const pageTitles: Record<string, string> = {
+  [electricityPath]: 'U.S. Electricity Mix',
+  [dataCentersPath]: 'U.S. Data Centers',
+};
 
 export function Site() {
   const pathname = usePathname();
-  const electricity = pathname === electricityPath;
 
   useEffect(() => {
-    document.title = electricity ? 'U.S. Electricity Mix' : 'American Trends';
-  }, [electricity]);
+    document.title = pageTitles[pathname] ?? 'American Trends';
+  }, [pathname]);
 
   return (
     <>
       <SiteNav pathname={pathname} />
-      {electricity ? <App /> : <HomePage />}
+      {pathname === electricityPath ? (
+        <App />
+      ) : pathname === dataCentersPath ? (
+        <DataCentersPage />
+      ) : (
+        <HomePage />
+      )}
     </>
   );
 }

@@ -2,9 +2,13 @@ import { useEffect, useState, type MouseEvent } from 'react';
 
 export const homePath = '/';
 export const electricityPath = '/electricity';
+export const dataCentersPath = '/data-centers';
 
 /** Sections in the bar. Add future pages here. */
-export const navItems = [{ href: electricityPath, label: 'U.S. Electricity Mix' }] as const;
+export const navItems = [
+  { href: electricityPath, label: 'U.S. Electricity Mix' },
+  { href: dataCentersPath, label: 'U.S. Data Centers' },
+] as const;
 
 export function normalizePath(pathname: string) {
   if (pathname.length > 1 && pathname.endsWith('/')) {
