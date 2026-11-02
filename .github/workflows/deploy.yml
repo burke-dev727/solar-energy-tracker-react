@@ -41,7 +41,9 @@ jobs:
             server/**/gradle-wrapper.properties
       - name: Test the API
         working-directory: server
-        run: ./gradlew test --no-daemon
+        run: |
+          chmod +x gradlew
+          ./gradlew test --no-daemon
 
   deploy:
     needs: test
@@ -70,7 +72,9 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: ./gradlew exportSnapshot -Psnapshot=../snapshot.json --no-daemon
+        run: |
+          chmod +x gradlew
+          ./gradlew exportSnapshot -Psnapshot=../snapshot.json --no-daemon
 
       - name: Set image name
         id: image
